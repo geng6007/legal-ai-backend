@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hs.mapper.ConsultSessionMapper">
+
+    <insert id="insert">
+        INSERT INTO consult_session (id, scenario_code, status, current_step, answers, report, create_time, update_time, deleted)
+        VALUES (#{id}, #{scenarioCode}, #{status}, #{currentStep}, #{answers}, #{report}, #{createTime}, #{updateTime}, #{deleted})
+    </insert>
+
+    <update id="update">
+        UPDATE consult_session
+        SET status = #{status},
+            current_step = #{currentStep},
+            answers = #{answers},
+            report = #{report},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <update id="logicDeleteById">
+        UPDATE consult_session SET deleted = 1 WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.hs.entity.ConsultSession">
+        SELECT * FROM consult_session
+        WHERE id = #{id} AND deleted = 0
+    </select>
+
+    <select id="selectAll" resultType="com.hs.entity.ConsultSession">
+        SELECT * FROM consult_session
+        WHERE deleted = 0
+        ORDER BY update_time DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,96 @@
+# Spring Boot 应用基础配置
+spring:
+  # 应用名称，用于日志、监控、服务识别等
+  application:
+    name: legal-ai-backend
+
+  # 数据库连接配置
+  datasource:
+    # MySQL 数据库连接 URL
+    # useUnicode=true&characterEncoding=utf-8: 使用 UTF-8 编码
+    # serverTimezone=Asia/Shanghai: 设置时区为上海
+    # createDatabaseIfNotExist=true: 数据库不存在时自动创建
+    # allowPublicKeyRetrieval=true: 允许客户端自动获取公钥（MySQL 8.0+）
+    # useSSL=false: 禁用 SSL 加密连接
+    url: jdbc:mysql://localhost:3306/legal-ai?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
+    # 数据库用户名
+    username: root
+    # 数据库密码
+    password: 123456
+    # MySQL 8.x JDBC 驱动类名
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # SQL 脚本初始化配置（用于应用启动时自动执行建表 SQL）
+  sql:
+    init:
+      # 初始化模式：always-每次启动都执行，embedded-仅嵌入式数据库，never-从不执行
+      mode: always
+      # SQL 脚本文件位置，classpath 表示 resources 目录下
+      schema-locations: classpath:schema.sql
+
+  # Servlet 容器配置
+  servlet:
+    # 文件上传（multipart）配置
+    multipart:
+      # 单个上传文件的最大大小限制
+      max-file-size: 20MB
+      # 整个 multipart 请求的最大大小限制（包含所有文件 + 表单数据 + HTTP 头）
+      max-request-size: 21MB
+
+# MyBatis ORM 框架配置
+mybatis:
+  # 实体类别名扫描包，SQL 中可直接使用类名代替全限定名
+  type-aliases-package: com.hs.entity
+  # MyBatis Mapper XML 文件位置
+  mapper-locations: classpath:mapper/*.xml
+  # MyBatis 全局配置
+  configuration:
+    # 开启下划线转驼峰映射（如：user_name → userName）
+    map-underscore-to-camel-case: true
+    # 开启 SQL 日志输出到控制台（开发环境使用，生产环境建议关闭或改用文件日志）
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# Tomcat Web 服务器配置
+server:
+  # 应用启动端口号
+  port: 8080
+
+# LangChain4j AI 框架配置（用于集成大语言模型）
+langchain4j:
+  # OpenAI 兼容 API 配置（通义千问使用 OpenAI 兼容接口）
+  open-ai:
+    # 普通聊天模型配置（一次性返回完整响应）
+    chat-model:
+      # API 密钥，从环境变量 QIANWEN_API_KEY 读取（安全起见不硬编码）
+      api-key: ${QIANWEN_API_KEY}
+      # 使用的模型名称
+      model-name: qwen3.8-max
+      # API 基础地址（通义千问的 OpenAI 兼容接口端点）
+      base-url: https://maas.qianwenaiapi.com/compatible-mode/v1
+      # 温度参数：控制生成文本的随机性（0-1，越低越确定，越高越创意）
+      temperature: 0.7
+      # 请求超时时间，PT60S 表示 60 秒（ISO 8601  Duration 格式）
+      timeout: PT60S
+      # 请求失败时的最大重试次数
+      max-retries: 2
+      # 是否记录请求日志（开发调试用）
+      log-requests: true
+      # 是否记录响应日志（开发调试用）
+      log-responses: true
+
+    # 流式聊天模型配置（逐步返回响应，类似打字机效果）
+    streaming-chat-model:
+      # API 密钥（与普通聊天模型相同）
+      api-key: ${QIANWEN_API_KEY}
+      # 使用的模型名称
+      model-name: qwen3.8-max
+      # API 基础地址
+      base-url: https://maas.qianwenaiapi.com/compatible-mode/v1
+      # 温度参数
+      temperature: 0.7
+      # 请求超时时间
+      timeout: PT60S
+      # 是否记录请求日志
+      log-requests: true
+      # 是否记录响应日志
+      log-responses: true

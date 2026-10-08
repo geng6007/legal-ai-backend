@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hs.mapper.KbDocumentMapper">
+
+    <insert id="insert">
+        INSERT INTO kb_document (id, title, source, doc_type, chunk_count, content, create_time, deleted)
+        VALUES (#{id}, #{title}, #{source}, #{docType}, #{chunkCount}, #{content}, #{createTime}, #{deleted})
+    </insert>
+
+    <update id="update">
+        UPDATE kb_document
+        SET title = #{title},
+            source = #{source},
+            doc_type = #{docType},
+            chunk_count = #{chunkCount},
+            content = #{content}
+        WHERE id = #{id}
+    </update>
+
+    <update id="logicDeleteById">
+        UPDATE kb_document SET deleted = 1 WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.hs.entity.KbDocument">
+        SELECT * FROM kb_document
+        WHERE id = #{id} AND deleted = 0
+    </select>
+
+    <select id="selectAll" resultType="com.hs.entity.KbDocument">
+        SELECT * FROM kb_document
+        WHERE deleted = 0
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByDocType" resultType="com.hs.entity.KbDocument">
+        SELECT * FROM kb_document
+        WHERE doc_type = #{docType} AND deleted = 0
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

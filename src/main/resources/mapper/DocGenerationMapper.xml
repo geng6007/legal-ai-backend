@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hs.mapper.DocGenerationMapper">
+
+    <insert id="insert">
+        INSERT INTO doc_generation (id, template_code, title, content, file_path, create_time, deleted)
+        VALUES (#{id}, #{templateCode}, #{title}, #{content}, #{filePath}, #{createTime}, #{deleted})
+    </insert>
+
+    <update id="update">
+        UPDATE doc_generation
+        SET title = #{title},
+            content = #{content},
+            file_path = #{filePath}
+        WHERE id = #{id}
+    </update>
+
+    <update id="logicDeleteById">
+        UPDATE doc_generation SET deleted = 1 WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.hs.entity.DocGeneration">
+        SELECT * FROM doc_generation
+        WHERE id = #{id} AND deleted = 0
+    </select>
+
+    <select id="selectAll" resultType="com.hs.entity.DocGeneration">
+        SELECT * FROM doc_generation
+        WHERE deleted = 0
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>
